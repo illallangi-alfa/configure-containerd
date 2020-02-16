@@ -15,23 +15,17 @@
     - "containerd is defined"
   tags:
     - "containerd"
-- name: "Update /etc/containerd/config.toml"
+- name: "Update templates"
   template:
     src:  "{{ item.src | default((item.dest | basename ()) + '.j2')}}"
     dest: "{{ item.dest }}"
   with_items:
     - dest:  "/etc/containerd/config.toml"
-  register: "config"
+    - dest:  "/etc/modules-load.d/containerd.conf"
+    - dest:  "/etc/sysctl.d/99-kubernetes-cri.conf"
+  notify: "reboot"
   when:
     - "containerd is defined"
-  tags:
-    - "containerd"
-- name: "Stop containerd"
-  systemd:
-    name: "containerd"
-    state: "stopped"
-  when:
-    - "config.changed"
   tags:
     - "containerd"
 - name: "Start and enable containerd"
