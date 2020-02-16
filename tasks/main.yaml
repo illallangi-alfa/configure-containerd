@@ -1,0 +1,36 @@
+---
+- name: "Fail if OS/Architecture is not supported"
+  fail:
+    msg: "Configuring containerd on {{ (ansible_os_family | lower) + '_' + (ansible_architecture | lower) }} is unsupported."
+  when:
+    - "(install_containerd_packages | default({}))[(ansible_os_family | lower) + '_' + (ansible_architecture | lower)] is not defined"
+    - "containerd is defined"
+  tags:
+    - "containerd"
+- name: "Create containerd directory"
+  file:
+    name: "/etc/containerd"
+    state: "directory"
+  when:
+    - "containerd is defined"
+- name: "Update /etc/containerd/config.toml"
+  template:
+    src:  "{{ item.src | default((item.dest | basename ()) + '.j2')}}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - dest:  "/etc/containerd/config.toml"
+  register: config_changed
+  when:
+    - "containerd is defined"
+  tags:
+    - "hosts"
+- name: "Stop containerd"
+  systemd:
+    name: containerd
+    state: stopped
+- name: "Start and enable containerd"
+  systemd:
+    name: "containerd"
+    state: "started"
+    enabled: "yes"
+    daemon_reload: "yes"
