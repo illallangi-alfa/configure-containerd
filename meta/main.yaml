@@ -1,6 +1,12 @@
 ---
 dependencies:
+  - src: "https://git@github.com/illallangi-alfa/configure-device-mapper-persistent-data.git"
+    scm: git
+    version: master
   - src: "https://git@github.com/illallangi-alfa/configure-docker-repository.git"
+    scm: git
+    version: master
+  - src: "https://git@github.com/illallangi-alfa/configure-lvm2.git"
     scm: git
     version: master
   - src: "https://git@github.com/illallangi-alfa/install-containerd.git"
