@@ -1,2 +1,2 @@
 ---
-docker_repository: true
+containerd: true
