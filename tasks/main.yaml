@@ -13,6 +13,8 @@
     state: "directory"
   when:
     - "containerd is defined"
+  tags:
+    - "containerd"
 - name: "Update /etc/containerd/config.toml"
   template:
     src:  "{{ item.src | default((item.dest | basename ()) + '.j2')}}"
@@ -23,14 +25,18 @@
   when:
     - "containerd is defined"
   tags:
-    - "hosts"
+    - "containerd"
 - name: "Stop containerd"
   systemd:
     name: containerd
     state: stopped
+  tags:
+    - "containerd"
 - name: "Start and enable containerd"
   systemd:
     name: "containerd"
     state: "started"
     enabled: "yes"
     daemon_reload: "yes"
+  tags:
+    - "containerd"
