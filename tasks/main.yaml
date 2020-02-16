@@ -21,15 +21,17 @@
     dest: "{{ item.dest }}"
   with_items:
     - dest:  "/etc/containerd/config.toml"
-  register: config_changed
+  register: "config"
   when:
     - "containerd is defined"
   tags:
     - "containerd"
 - name: "Stop containerd"
   systemd:
-    name: containerd
-    state: stopped
+    name: "containerd"
+    state: "stopped"
+  when:
+    - "config.changed"
   tags:
     - "containerd"
 - name: "Start and enable containerd"
